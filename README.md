@@ -216,8 +216,8 @@ echo/
 
 ### Step 1 — Clone & enter the project
 ```bash
-git clone https://github.com/your-username/echo.git
-cd echo
+git clone https://github.com/mandrita16/ECHO-Mental-Health-AI
+cd ECHO-Mental-Health-AI
 ```
 
 ### Step 2 — Create virtual environment
