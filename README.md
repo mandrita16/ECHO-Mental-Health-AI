@@ -175,6 +175,13 @@ Opens as a printable page → save as PDF via browser.
 
 ---
 
+The detailed report on the mental health project can be accessed via the link below:
+```
+https://drive.google.com/file/d/17SnQSK4Xvt6etNScz73FCPJvFkksUqdg/view?usp=drivesdk
+```
+
+---
+
 ## Tech Stack
 
 | Component | Technology |
