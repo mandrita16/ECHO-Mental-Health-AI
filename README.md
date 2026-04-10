@@ -247,7 +247,8 @@ pip install -r requirements.txt
 ### Step 4 — Add your API key
 Create a `.env` file in the root `echo/` folder:
 ```
-GEMINI_API_KEY=your_key_here
+OPENROUTER_API_KEY=openrouter_key
+CHROMA_TELEMETRY=false
 ```
 
 ### Step 5 — Start the server
