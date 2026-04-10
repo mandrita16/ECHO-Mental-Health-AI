@@ -141,7 +141,8 @@ Remember: Respond to the PERSON, not the message. 3-5 sentences. Zero generic ph
                 generation_config=genai.types.GenerationConfig(temperature=0.7, max_output_tokens=200)
             )
             return response.text.strip()
-        except Exception:
+        except Exception as e2:
+            print(f"❌ GEMINI API ERROR (Fallback): {e2}")
             return "Something's weighing on you. Can you tell me a bit more about what's going on?"
 
 

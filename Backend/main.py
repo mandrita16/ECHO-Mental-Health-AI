@@ -10,7 +10,7 @@ Orchestrates the full 5-layer pipeline:
 
 Run with: uvicorn main:app --reload --port 8000
 """
-
+from openai import OpenAI
 import os
 import sys
 import uuid
@@ -34,43 +34,89 @@ from retrieval_core import seed_knowledge_base, retrieve_grounding_context
 from response_synthesizer import build_response, anti_generic_check, SYSTEM_PROMPT
 from safety_gate import check_crisis, apply_safety_layer
 
-load_dotenv()
+load_dotenv(override=True)
 
 # ─── Global model references ───────────────────────────────────────────────────
 gemini_model = None
 embedding_model = None
+
+# --- OPENROUTER WRAPPER ---
+class OpenRouterWrapper:
+    def __init__(self, system_instruction=""):
+        self.client = OpenAI(
+            base_url="https://openrouter.ai/api/v1",
+            api_key=os.getenv("OPENROUTER_API_KEY"),
+        )
+        # Using the free OpenRouter Gemini 2.0 Flash endpoint
+        self.model = "google/gemini-2.5-flash-lite" 
+        self.system_prompt = system_instruction
+
+    def generate_content(self, prompt, **kwargs):
+        messages = []
+        if self.system_prompt:
+            messages.append({"role": "system", "content": self.system_prompt})
+        messages.append({"role": "user", "content": prompt})
+
+        res = self.client.chat.completions.create(
+            model=self.model,
+            messages=messages,
+            temperature=0.1
+        )
+        class MockResponse: text = res.choices[0].message.content
+        return MockResponse()
+
+    def start_chat(self, history=None):
+        class MockChat:
+            def __init__(self, parent, hist):
+                self.parent = parent
+                self.messages = []
+                if self.parent.system_prompt:
+                    self.messages.append({"role": "system", "content": self.parent.system_prompt})
+                if hist:
+                    for h in hist:
+                        # Translate Google's history format to OpenAI format
+                        role = "assistant" if h.get("role") == "model" else "user"
+                        content = h["parts"][0] if "parts" in h else h.get("content", "")
+                        self.messages.append({"role": role, "content": content})
+
+            def send_message(self, prompt, **kwargs):
+                self.messages.append({"role": "user", "content": prompt})
+                res = self.parent.client.chat.completions.create(
+                    model=self.parent.model,
+                    messages=self.messages,
+                    temperature=0.75
+                )
+                reply = res.choices[0].message.content
+                self.messages.append({"role": "assistant", "content": reply})
+                class MockResponse: text = reply
+                return MockResponse()
+                
+        return MockChat(self, history)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Initialize models on startup."""
     global gemini_model, embedding_model
     
-    print(" Initializing ECHO...")
+    print("🚀 Initializing ECHO via OpenRouter...")
     
-    # Init Gemini
-    api_key = os.getenv("GEMINI_API_KEY")
+    api_key = os.getenv("OPENROUTER_API_KEY")
     if not api_key:
-        print("  WARNING: GEMINI_API_KEY not set. Set it in .env file.")
+        print("❌ WARNING: OPENROUTER_API_KEY not set in .env")
     else:
-        genai.configure(api_key=api_key)
-        gemini_model = genai.GenerativeModel(
-            model_name="gemini-2.0-flash",
-            system_instruction=SYSTEM_PROMPT
-        )
-        print(" Gemini model loaded.")
+        # Initialize our wrapper instead of genai
+        gemini_model = OpenRouterWrapper(system_instruction=SYSTEM_PROMPT)
+        print("✅ OpenRouter (Gemini 2.0 Flash) loaded.")
     
-    # Init embedding model (lightweight, fast)
-    print(" Loading sentence transformer (this may take a moment on first run)...")
+    print("⏳ Loading sentence transformer...")
     embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
-    print(" Embedding model loaded.")
+    print("✅ Embedding model loaded.")
     
-    # Seed knowledge base
     seed_knowledge_base(embedding_model)
-    print(" Knowledge base ready.")
-    print(" ECHO is ready!\n")
+    print("✅ Knowledge base ready.")
+    print("🎯 ECHO is ready!\n")
     
     yield
-    
     print("Shutting down ECHO...")
 
 
