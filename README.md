@@ -193,6 +193,13 @@ https://drive.google.com/file/d/17SnQSK4Xvt6etNScz73FCPJvFkksUqdg/view?usp=drive
 | Frontend | Vanilla HTML/CSS/JS (single file, zero build step) |
 | Voice | Web Speech API (browser-native) |
 
+![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python)
+
+![FastAPI](https://img.shields.io/badge/FastAPI-0.115-green?logo=fastapi)
+
+![Gemini](https://img.shields.io/badge/LLM-Gemini%202.0%20Flash-orange?logo=google)
+
+![ChromaDB](https://img.shields.io/badge/VectorDB-ChromaDB-purple)
 ---
 
 ## Project Structure
