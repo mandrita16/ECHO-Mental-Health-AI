@@ -1,0 +1,5 @@
+frontend/index.html linguist-detectable=false
+
+# Mark Python as the primary language
+*.py linguist-detectable=true
+*.py linguist-language=Python
