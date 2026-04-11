@@ -200,6 +200,7 @@ https://drive.google.com/file/d/17SnQSK4Xvt6etNScz73FCPJvFkksUqdg/view?usp=drive
 ![Gemini](https://img.shields.io/badge/LLM-Gemini%202.0%20Flash-orange?logo=google)
 
 ![ChromaDB](https://img.shields.io/badge/VectorDB-ChromaDB-purple)
+
 ---
 
 ## Project Structure
