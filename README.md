@@ -187,7 +187,7 @@ https://drive.google.com/file/d/17SnQSK4Xvt6etNScz73FCPJvFkksUqdg/view?usp=drive
 | Component | Technology |
 |---|---|
 | LLM | Gemini 2.0 Flash (approved roster) |
-| Embeddings | `all-MiniLM-L6-v2` via sentence-transformers |
+| Embeddings | `all-MiniLM-L6-v2` via Hugging Face sentence-transformers |
 | Vector DB | ChromaDB (in-memory + persistent) |
 | Backend | FastAPI + Uvicorn |
 | Frontend | Vanilla HTML/CSS/JS (single file, zero build step) |
