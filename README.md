@@ -222,6 +222,8 @@ echo/
 ```
 
 ---
+## Deployed Link:https://huggingface.co/spaces/mandritadasgupta/echo-backend
+---
 
 ## Setup & Running
 
